@@ -87,6 +87,35 @@ uint16_t adcValue = 0;             // ADC current value
 bool timerStatus = false;          // SATUS bit
 bool bufferReady = false;          // Buffer ready status bit
 
+
+// Designed for 125 Hz!!!!
+// Coeff arrays: one entry per section.
+const int NUM_SECTIONS = 4;
+const float ECG_a1[NUM_SECTIONS] = { 0.70682283f, 0.95028224f, -1.95360385f, -1.98048558f };
+const float ECG_a2[NUM_SECTIONS] = { 0.15621030f, 0.54073140f, 0.95423412f, 0.98111344f };
+const float ECG_b0[NUM_SECTIONS] = { 0.28064917f, 1.00000000f, 1.00000000f, 1.00000000f };
+const float ECG_b1[NUM_SECTIONS] = { 0.56129834f, 2.00000000f, -2.00000000f, -2.00000000f };
+const float ECG_b2[NUM_SECTIONS] = { 0.28064917f, 1.00000000f, 1.00000000f, 1.00000000f };
+
+// Per-channel state: z1 and z2 for each section and each channel
+// z_state[channel][section][state_index] where state_index 0 => z1, 1 => z2
+static float z_state[NUM_CHANNELS][NUM_SECTIONS][2];
+
+
+
+float ECGFilterChannel(uint8_t channel, float input) {
+  float output = input;
+  for (int s = 0; s < NUM_SECTIONS; ++s){
+    float z1 = z_state[channel][s][0];
+    float z2 = z_state[channel][s][1];
+    float x = output - ECG_a1[s] * z1 - ECG_a2[s] * z2;
+    output = ECG_b0[s] * x + ECG_b1[s] * z1 + ECG_b2[s] * z2;
+    z_state[channel][s][1] = z1;
+    z_state[channel][s][0] = x;
+  }
+  return output;
+}
+
 // searches for the string sfind in the string str
 // returns 1 if string found
 // returns 0 if string not found
@@ -114,9 +143,15 @@ ISR(TIMER1_COMPA_vect) {
       // Read ADC input
       adcValue = analogRead(currentChannel);
 
+      //FILTER
+      float raw_f = (float)adcValue;
+      float filtered_f = ECGFilterChannel(currentChannel, raw_f);
+      int16_t filtered_i16 = (int16_t) round(filtered_f);
+      uint16_t encoded = (uint16_t)( (uint16_t)filtered_i16 + 0x8000 );
+
       // Store current values in packetBuffer to send.
-      packetBuffer[((2 * currentChannel) + HEADER_LEN)] = highByte(adcValue);     // Write High Byte
-      packetBuffer[((2 * currentChannel) + HEADER_LEN + 1)] = lowByte(adcValue);  // Write Low Byte
+      packetBuffer[((2 * currentChannel) + HEADER_LEN)] = highByte(encoded);     // Write High Byte
+      packetBuffer[((2 * currentChannel) + HEADER_LEN + 1)] = lowByte(encoded);  // Write Low Byte
     }
 
     // Increment the packet counter
