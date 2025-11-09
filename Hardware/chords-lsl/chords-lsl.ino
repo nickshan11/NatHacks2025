@@ -144,7 +144,7 @@ ISR(TIMER1_COMPA_vect) {
       adcValue = analogRead(currentChannel);
 
       //FILTER
-      float raw_f = (float)adcValue;
+      float raw_f = (float)adcValue - 512.0f;
       float filtered_f = ECGFilterChannel(currentChannel, raw_f);
       int16_t filtered_i16 = (int16_t) round(filtered_f);
       uint16_t encoded = (uint16_t)( (uint16_t)filtered_i16 + 0x8000 );
