@@ -20,29 +20,37 @@ struct TabBarView: View {
                 .onAppear { selectedTab = 0 }
                 .tag(0)
             
+            DataView()
+                .tabItem {
+                    Image(systemName: "chart.bar")
+                    Text("Data")
+                }
+                .onAppear { selectedTab = 1 }
+                .tag(1)
+            
             SleepSettingsView()
                 .tabItem {
                     Image(systemName: "moon")
                     Text("Sleep")
                 }
-                .onAppear { selectedTab = 1 }
-                .tag(1)
+                .onAppear { selectedTab = 2 }
+                .tag(2)
             
             NightmaresView()
                 .tabItem {
                     Image(systemName: "exclamationmark.triangle")
                     Text("Nightmares")
                 }
-                .onAppear { selectedTab = 2 }
-                .tag(2)
-            
-            SettingsView()
-                .tabItem {  
-                    Image(systemName: "gearshape")
-                    Text("Settings")
-                }
                 .onAppear { selectedTab = 3 }
                 .tag(3)
+            
+//            SettingsView()
+//                .tabItem {  
+//                    Image(systemName: "gearshape")
+//                    Text("Settings")
+//                }
+//                .onAppear { selectedTab = 4 }
+//                .tag(4)
         }
     }
 }

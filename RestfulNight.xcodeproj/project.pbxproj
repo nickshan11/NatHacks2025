@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -20,6 +20,7 @@
 		5BC91AB22C4EE89A0039F374 /* SleepChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC91AB12C4EE89A0039F374 /* SleepChartView.swift */; };
 		5BF32F832C3C056900A528BD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF32F822C3C056900A528BD /* SettingsView.swift */; };
 		5BF32F852C3C05A900A528BD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF32F842C3C05A900A528BD /* HomeView.swift */; };
+		8313BCAF2EC15759005538D8 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8313BCAE2EC15756005538D8 /* ProgressRing.swift */; };
 		83364B222EBFFBCB00C93560 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83364B212EBFFBCB00C93560 /* GoogleService-Info.plist */; };
 		83364B252EBFFC7900C93560 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 83364B242EBFFC7900C93560 /* FirebaseAnalytics */; };
 		83364B272EBFFDC600C93560 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 83364B262EBFFDC600C93560 /* FirebaseCore */; };
@@ -42,9 +43,14 @@
 		5BC91AB12C4EE89A0039F374 /* SleepChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepChartView.swift; sourceTree = "<group>"; };
 		5BF32F822C3C056900A528BD /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5BF32F842C3C05A900A528BD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		8313BCAE2EC15756005538D8 /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		83364B212EBFFBCB00C93560 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F8BFF4102EC03CCC00D24207 /* NightmaresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightmaresView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8313BCAA2EC14B4B005538D8 /* Data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Data; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5BB3ED632C3AD54600CD4274 /* Frameworks */ = {
@@ -63,6 +69,7 @@
 		5B7A310A2C3FDC8200353790 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				8313BCAE2EC15756005538D8 /* ProgressRing.swift */,
 				F8BFF4102EC03CCC00D24207 /* NightmaresView.swift */,
 				5BF32F842C3C05A900A528BD /* HomeView.swift */,
 				5BC91AB12C4EE89A0039F374 /* SleepChartView.swift */,
@@ -129,6 +136,7 @@
 		5BB3ED7F2C3B0AA200CD4274 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				8313BCAA2EC14B4B005538D8 /* Data */,
 				5BB3ED812C3B0ACA00CD4274 /* Root */,
 				5B7A310F2C3FDE2900353790 /* Settings */,
 				5B7A310D2C3FDDF900353790 /* Sleep */,
@@ -160,6 +168,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8313BCAA2EC14B4B005538D8 /* Data */,
 			);
 			name = RestfulNight;
 			productName = RestfulNight;
@@ -224,6 +235,7 @@
 				5BF32F832C3C056900A528BD /* SettingsView.swift in Sources */,
 				5BC91AB02C4E81DA0039F374 /* SleepSettingsViewModel.swift in Sources */,
 				5BC91AB22C4EE89A0039F374 /* SleepChartView.swift in Sources */,
+				8313BCAF2EC15759005538D8 /* ProgressRing.swift in Sources */,
 				5B7A310C2C3FDCCB00353790 /* HomeViewModel.swift in Sources */,
 				5BB3ED7E2C3B099800CD4274 /* TabBarView.swift in Sources */,
 				5BB3ED6C2C3AD54600CD4274 /* SleepSettingsView.swift in Sources */,
@@ -365,6 +377,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RestfulNight/Preview Content\"";
+				DEVELOPMENT_TEAM = 57753UA8JQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -393,6 +406,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"RestfulNight/Preview Content\"";
+				DEVELOPMENT_TEAM = 57753UA8JQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
