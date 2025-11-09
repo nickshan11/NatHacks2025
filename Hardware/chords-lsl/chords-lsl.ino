@@ -64,8 +64,8 @@
 #endif
 
 // Common macros
-#define SAMP_RATE 250
-#define BAUD_RATE 9600
+#define SAMP_RATE 125
+#define BAUD_RATE 115200
 #define HEADER_LEN 3                                    // Header = SYNC_BYTE_1 + SYNC_BYTE_2 + Counter
 #define PACKET_LEN (NUM_CHANNELS * 2 + HEADER_LEN + 1)  // Packet length = Header + Data + END_BYTE
 #define SYNC_BYTE_1 0xC7                                // Packet first byte
