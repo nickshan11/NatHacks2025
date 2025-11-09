@@ -5,6 +5,7 @@ import csv
 import os
 import time
 from collections import deque
+from datetime import datetime
 
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QThread, pyqtSignal
@@ -39,8 +40,9 @@ class SerialReader(QThread):
             self.running = True
 
             if self.log_csv:
+                date = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
                 script_dir = os.path.dirname(os.path.abspath(__file__))
-                csv_path = os.path.join(script_dir, 'biosignals.csv')
+                csv_path = os.path.join(script_dir, f"biosignals-{date}.csv")
                 self.csv_file = open(csv_path, 'w', newline='')
                 self.csv_writer = csv.writer(self.csv_file)
                 self.csv_writer.writerow(['ElapsedTime', 'Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
@@ -204,15 +206,20 @@ class SerialTerminal(QWidget):
         if self.reader_thread and self.reader_thread.ser:
             self.reader_thread.ser.write(("STOP" + '\n').encode('utf-8'))
             self.output.append(f"> Disconnecting...")
-            self.input.clear()
+    
+    def send_start(self):
+        if self.reader_thread and self.reader_thread.ser:
+            self.reader_thread.ser.write(("START" + '\n').encode('utf-8'))
+            self.output.append(f"> Starting...")
 
     def display_data(self, text):
         self.output.append(text)
 
     def update_plot(self, values):
         for i, val in enumerate(values):
-            self.data_buffers[i].append(val)
-            self.plot_curves[i].setData(list(self.data_buffers[i]))
+            if (i==0):
+                self.data_buffers[i].append(val)
+                self.plot_curves[i].setData(list(self.data_buffers[i]))
 
 
 def main():
