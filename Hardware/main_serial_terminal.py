@@ -3,11 +3,15 @@ import serial
 import serial.tools.list_ports
 import csv
 import os
+import time
+from collections import deque
+
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QThread, pyqtSignal
+import pyqtgraph as pg
 
 # --- Configuration ---
-BAUD_RATE = 9600
+BAUD_RATE = 115200
 NUM_CHANNELS = 6
 PACKET_LEN = NUM_CHANNELS * 2 + 3 + 1  # 16 bytes
 SYNC1 = 0xC7
@@ -39,16 +43,15 @@ class SerialReader(QThread):
                 csv_path = os.path.join(script_dir, 'biosignals.csv')
                 self.csv_file = open(csv_path, 'w', newline='')
                 self.csv_writer = csv.writer(self.csv_file)
-                self.csv_writer.writerow(['Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
-
+                self.csv_writer.writerow(['ElapsedTime', 'Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
+            
+            start_time = time.time()
             buffer = bytearray()
 
             while self.running:
                 if self.ser.in_waiting:
                     buffer.extend(self.ser.read(self.ser.in_waiting))
-                    # Search for packets
                     while len(buffer) >= PACKET_LEN:
-                        # Look for sync bytes
                         if buffer[0] == SYNC1 and buffer[1] == SYNC2:
                             packet = buffer[:PACKET_LEN]
                             buffer = buffer[PACKET_LEN:]
@@ -58,7 +61,8 @@ class SerialReader(QThread):
                                 self.data_received.emit(text)
                                 self.packet_decoded.emit(values)
                                 if self.csv_writer:
-                                    self.csv_writer.writerow([counter] + values)
+                                    elapsed = time.time() - start_time
+                                    self.csv_writer.writerow([f"{elapsed:.3f}", counter] + values)
                             else:
                                 buffer.pop(0)
                         elif buffer[0] == 0x2 and buffer[1] == 0x0 and buffer[2] == 0x0:
@@ -92,13 +96,12 @@ class SerialReader(QThread):
             values.append(val)
         return counter, values
 
-
 # --- Main GUI Window ---
 class SerialTerminal(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chord LSL Bluetooth Terminal")
-        self.resize(700, 500)
+        self.resize(900, 600)
 
         layout = QVBoxLayout()
         top_row = QHBoxLayout()
@@ -118,6 +121,22 @@ class SerialTerminal(QWidget):
         top_row.addWidget(self.refresh_button)
         top_row.addWidget(self.connect_button)
 
+        # Plot area
+        self.plot_widget = pg.PlotWidget(title="ECG Signals")
+        self.plot_widget.setYRange(0, 4096)  # assuming 12-bit ADC
+        self.plot_widget.showGrid(x=True, y=True)
+        self.plot_widget.addLegend()
+
+        self.plot_curves = []
+        for i in range(NUM_CHANNELS):
+            pen = pg.mkPen(color=pg.intColor(i), width=2)
+            curve = self.plot_widget.plot(pen=pen, name=f"CH{i}")
+            self.plot_curves.append(curve)
+
+        # Data buffers
+        self.buffer_len = 500  # ~4 seconds at 125Hz
+        self.data_buffers = [deque([0]*self.buffer_len, maxlen=self.buffer_len) for _ in range(NUM_CHANNELS)]
+
         # Terminal area
         self.output = QTextEdit()
         self.output.setReadOnly(True)
@@ -133,6 +152,7 @@ class SerialTerminal(QWidget):
 
         # Layout setup
         layout.addLayout(top_row)
+        layout.addWidget(self.plot_widget)
         layout.addWidget(self.output)
         layout.addLayout(bottom_row)
         self.setLayout(layout)
@@ -164,6 +184,7 @@ class SerialTerminal(QWidget):
 
             self.reader_thread = SerialReader(port, BAUD_RATE, log_csv=True)
             self.reader_thread.data_received.connect(self.display_data)
+            self.reader_thread.packet_decoded.connect(self.update_plot)
             self.reader_thread.start()
             self.connect_button.setText("Disconnect")
             self.output.append(f"Connecting to {port}\n")
@@ -187,6 +208,11 @@ class SerialTerminal(QWidget):
 
     def display_data(self, text):
         self.output.append(text)
+
+    def update_plot(self, values):
+        for i, val in enumerate(values):
+            self.data_buffers[i].append(val)
+            self.plot_curves[i].setData(list(self.data_buffers[i]))
 
 
 def main():
