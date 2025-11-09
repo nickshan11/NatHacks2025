@@ -2,6 +2,7 @@ import sys
 import serial
 import serial.tools.list_ports
 import csv
+import os
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QThread, pyqtSignal
 
@@ -12,7 +13,6 @@ PACKET_LEN = NUM_CHANNELS * 2 + 3 + 1  # 16 bytes
 SYNC1 = 0xC7
 SYNC2 = 0x7C
 END_BYTE = 0x01
-
 
 # --- Worker Thread for Serial Reading ---
 class SerialReader(QThread):
@@ -35,7 +35,9 @@ class SerialReader(QThread):
             self.running = True
 
             if self.log_csv:
-                self.csv_file = open('biosignals.csv', 'w', newline='')
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                csv_path = os.path.join(script_dir, 'biosignals.csv')
+                self.csv_file = open(csv_path, 'w', newline='')
                 self.csv_writer = csv.writer(self.csv_file)
                 self.csv_writer.writerow(['Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
 
