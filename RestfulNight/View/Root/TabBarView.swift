@@ -28,13 +28,21 @@ struct TabBarView: View {
                 .onAppear { selectedTab = 1 }
                 .tag(1)
             
+            NightmaresView()
+                .tabItem {
+                    Image(systemName: "exclamationmark.triangle")
+                    Text("Nightmares")
+                }
+                .onAppear { selectedTab = 2 }
+                .tag(2)
+            
             SettingsView()
                 .tabItem {  
                     Image(systemName: "gearshape")
                     Text("Settings")
                 }
-                .onAppear { selectedTab = 2 }
-                .tag(2)
+                .onAppear { selectedTab = 3 }
+                .tag(3)
         }
     }
 }
