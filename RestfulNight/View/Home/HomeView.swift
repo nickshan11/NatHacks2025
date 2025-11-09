@@ -1,89 +1,55 @@
-//
-//  HomeView.swift
-//  RestfulNight
-//
-//  Created by Deimante Valunaite on 08/07/2024.
-//
-
 import SwiftUI
 import Charts
 
 struct HomeView: View {
-    @StateObject private var homeViewModel = HomeViewModel()
-    @State private var value: Double = 75 // Default sleep score (between 1 and 100)
-
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 15) {
-                ProgressRing(progress: value / 100, value: $value)
-                    .padding(.top, -100) // TODO: CHANGE THIS LATER
-                
-                HStack {
-                    Text("Weekly Sleep Scores")
-                        .font(.headline)
-                        .bold()
-                    Spacer()
-                }
-                .padding([.top, .horizontal])
-                
-                // Placeholder for future graph or widget
-                Text("No past scores available")
-                    .frame(height: 150)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(12)
-                    .padding(.bottom)
-                
-                
-                .toolbar {
-                    NavigationLink {
-                        SleepChartView()
-                    } label: {
-                        Label("Calendar", systemImage: "calendar")
-                    }
-                    .tint(.primary)
-                }
-            }
-            .navigationTitle("RestfulNight")
-            .navigationBarTitleDisplayMode(.large)
-            .padding(.horizontal)
-        }
-    }
-}
-
-struct ProgressRing: View {
-    var progress: Double // Value between 0 and 1
-    @Binding var value: Double // The number displayed in the middle
+    @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.gray.opacity(0.3), lineWidth: 20)
-            
-            Circle()
-                .trim(from: 1 - progress, to: 1) // Reverse the trim to make it counterclockwise
-                .stroke(Color.blue, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                .rotationEffect(.degrees(-90)) // Rotate counterclockwise to start from the left
-            
-            VStack {
-                Text("\(Int(value))")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Text("score")
-                    .font(.caption)
-                    .foregroundColor(.gray)
+        NavigationView {
+            VStack(spacing: 20) {
+                
+                // Picker for Day / Week / Month
+                Picker("Time View", selection: $viewModel.timeView) {
+                    ForEach(TimeView.allCases, id: \.self) { view in
+                        Text(view.rawValue.capitalized).tag(view)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+                
+                // Stats
+                VStack(spacing: 4) {
+                    Text("😴 Average Sleep: \(String(format: "%.1f", viewModel.averageSleepDuration())) hrs")
+                        .font(.headline)
+                    Text("😱 Nightmares: \(viewModel.nightmareCount)")
+                        .foregroundColor(.secondary)
+                }
+                .padding(.bottom, 10)
+                
+                // Chart
+                Chart(viewModel.filteredSleepData) { data in
+                    BarMark(
+                        x: .value("Date", data.date, unit: .day),
+                        y: .value("Sleep Hours", data.sleepDuration)
+                    )
+                    .foregroundStyle(.blue.gradient)
+                    .annotation(position: .top) {
+                        Text(String(format: "%.1f", data.sleepDuration))
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                    }
+                }
+                .frame(height: 250)
+                .padding(.horizontal)
+                
+                Spacer()
             }
+            .navigationTitle("RestfulNight")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .frame(width: 200, height: 200)
+        .onAppear {
+            viewModel.filterSleepData()
+            viewModel.loadNightmareData()
+        }
     }
-}
-
-struct SleepScore: Identifiable {
-    let id = UUID()
-    let day: String
-    let score: Int
-}
-
-#Preview {
-    HomeView()
 }
