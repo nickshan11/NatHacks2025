@@ -28,36 +28,39 @@ class HomeViewModel: ObservableObject {
     private func generateSampleSleepData() {
         let calendar = Calendar.current
         let now = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        
         sleepData = (0..<7).map { i in
-            SleepScoreData(
-                date: calendar.date(byAdding: .day, value: -i, to: now)!,
-                sleepDuration: Double.random(in: 6.0...9.0)
-            )
+            let date = calendar.date(byAdding: .day, value: -i, to: now)!
+            let label = formatter.string(from: date)
+            let score = Int.random(in: 60...100)
+            return SleepScoreData(label: label, score: score)
         }
     }
     
     // Filter according to TimeView
     func filterSleepData() {
-        let calendar = Calendar.current
         let now = Date()
+        let calendar = Calendar.current
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        
         switch timeView {
         case .day:
-            filteredSleepData = sleepData.filter { calendar.isDate($0.date, inSameDayAs: now) }
+            let todayLabel = formatter.string(from: now)
+            filteredSleepData = sleepData.filter { $0.label == todayLabel }
         case .week:
-            if let weekAgo = calendar.date(byAdding: .day, value: -7, to: now) {
-                filteredSleepData = sleepData.filter { $0.date >= weekAgo && $0.date <= now }
-            }
+            filteredSleepData = Array(sleepData.prefix(7))
         case .month:
-            if let monthAgo = calendar.date(byAdding: .month, value: -1, to: now) {
-                filteredSleepData = sleepData.filter { $0.date >= monthAgo && $0.date <= now }
-            }
+            filteredSleepData = sleepData // placeholder — could expand if storing >30 days
         }
     }
     
-    // Average sleep
+    // Average sleep (based on score)
     func averageSleepDuration() -> Double {
         guard !filteredSleepData.isEmpty else { return 0 }
-        let total = filteredSleepData.map { $0.sleepDuration }.reduce(0, +)
+        let total = filteredSleepData.map { Double($0.score) }.reduce(0, +)
         return total / Double(filteredSleepData.count)
     }
     
