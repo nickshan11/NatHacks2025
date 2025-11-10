@@ -1,6 +1,5 @@
 import SwiftUI
 import Charts
-import Firebase
 
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
@@ -105,6 +104,7 @@ struct HomeView: View {
 struct MonthlyView: View {
     @State private var sleepScores: [String: Double] = [:] // Date as key, sleep score as value
     private let deviceID = "exampleDeviceID" // Replace with actual device ID
+    private let apiBaseURL = URL(string: "http://localhost:5000/api")! // Update if running on device
 
     var body: some View {
         VStack {
@@ -134,33 +134,75 @@ struct MonthlyView: View {
     }
 
     private func fetchSleepScores() {
-        let db = Firestore.firestore()
-        db.collection(deviceID).getDocuments { snapshot, error in
-            guard let documents = snapshot?.documents, error == nil else {
-                print("Error fetching sleep scores: \(error?.localizedDescription ?? "Unknown error")")
+        // Build month param YYYY-MM for current month
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        let monthParam = formatter.string(from: Date())
+
+        guard var components = URLComponents(url: apiBaseURL.appendingPathComponent("devices/\(deviceID)/sleep-scores"), resolvingAgainstBaseURL: false) else {
+            return
+        }
+        components.queryItems = [URLQueryItem(name: "month", value: monthParam)]
+        guard let url = components.url else { return }
+
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("API error: \(error.localizedDescription). Falling back to mock data.")
+                DispatchQueue.main.async { self.sleepScores = generateMockScores(forMonth: monthParam) }
                 return
             }
-
-            var scores: [String: Double] = [:]
-            for document in documents {
-                if let date = document.documentID as? String, let score = document["score"] as? Double {
-                    scores[date] = score
-                }
+            guard let data = data else {
+                DispatchQueue.main.async { self.sleepScores = generateMockScores(forMonth: monthParam) }
+                return
             }
-
-            if scores.isEmpty {
-                // Generate mock data for visualization
-                for day in 1...30 {
-                    let dateKey = "2025-11-\(String(format: "%02d", day))"
-                    scores[dateKey] = Double.random(in: 50...100)
+            do {
+                let decoded = try JSONDecoder().decode(SleepScoresResponse.self, from: data)
+                var scoresMap: [String: Double] = [:]
+                for entry in decoded.scores {
+                    scoresMap[entry.date] = Double(entry.score)
                 }
-            }
-
-            DispatchQueue.main.async {
-                self.sleepScores = scores
+                DispatchQueue.main.async {
+                    withAnimation(.easeInOut) {
+                        self.sleepScores = scoresMap
+                    }
+                }
+            } catch {
+                print("Decoding error: \(error). Falling back to mock data.")
+                DispatchQueue.main.async { self.sleepScores = generateMockScores(forMonth: monthParam) }
             }
         }
+        task.resume()
     }
+
+    private func generateMockScores(forMonth month: String) -> [String: Double] {
+        // month format: YYYY-MM
+        var map: [String: Double] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let monthStart = dateFormatter.date(from: month + "-01") ?? Date()
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+    // calendar.range returns Range<Int>?; fallback must match that type (use half-open range 1..<31)
+    let range = calendar.range(of: .day, in: .month, for: monthStart) ?? 1..<31
+        for day in range {
+            let dateKey = String(format: "%@-%02d", month, day)
+            map[dateKey] = Double(Int.random(in: 50...100))
+        }
+        return map
+    }
+}
+
+// MARK: - API Models
+private struct SleepScoresResponse: Decodable {
+    let success: Bool
+    let deviceId: String
+    let month: String
+    let scores: [ScoreEntry]
+}
+
+private struct ScoreEntry: Decodable {
+    let date: String
+    let score: Int
 }
 
 struct ProgressRingView: View {

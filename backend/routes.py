@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, request
+from datetime import datetime, timedelta
+from random import randint
 from models import Item, db
 
 blueprint_api = Blueprint('api', __name__)
@@ -43,4 +45,42 @@ def delete_item(item_id):
     db.session.delete(item)
     db.session.commit()
     return jsonify({'success': True, 'deleted_id': item_id})
+
+# Sleep scores endpoint
+@blueprint_api.route('/devices/<string:device_id>/sleep-scores', methods=['GET'])
+def get_sleep_scores(device_id):
+    """Return mock sleep scores for a given device and month.
+    Query params: month=YYYY-MM (defaults to current month)
+    Response: { deviceId: str, month: str, scores: [{ date: YYYY-MM-DD, score: int }] }
+    """
+    month = request.args.get('month')
+    today = datetime.utcnow()
+    if not month:
+        month = today.strftime('%Y-%m')
+    try:
+        month_start = datetime.strptime(month + '-01', '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'success': False, 'message': 'Invalid month format, expected YYYY-MM'}), 400
+
+    # Determine number of days in month
+    if month_start.month == 12:
+        next_month = datetime(month_start.year + 1, 1, 1)
+    else:
+        next_month = datetime(month_start.year, month_start.month + 1, 1)
+    days_in_month = (next_month - month_start).days
+
+    scores = []
+    for day in range(days_in_month):
+        date = month_start + timedelta(days=day)
+        # Mock score 50-100, lightly vary by weekday for pseudo realism
+        base = 60 + (date.weekday() * 3)  # weekday effect
+        score = min(100, max(50, base + randint(-10, 15)))
+        scores.append({'date': date.strftime('%Y-%m-%d'), 'score': score})
+
+    return jsonify({
+        'success': True,
+        'deviceId': device_id,
+        'month': month,
+        'scores': scores
+    })
 
