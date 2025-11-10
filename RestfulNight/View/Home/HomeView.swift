@@ -59,7 +59,7 @@ struct HomeView: View {
                 Spacer()
                 }
             }
-            .navigationTitle("RestfulNight")
+            .navigationTitle("REMGuard")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {

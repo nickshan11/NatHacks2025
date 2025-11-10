@@ -3,7 +3,8 @@ import SwiftUI
 import FirebaseFirestore
 
 enum TimeView: String, CaseIterable {
-    case day, week, month
+    // case day
+    case week, month
 }
 
 class HomeViewModel: ObservableObject {
@@ -47,9 +48,9 @@ class HomeViewModel: ObservableObject {
         formatter.dateFormat = "MMM d"
         
         switch timeView {
-        case .day:
-            let todayLabel = formatter.string(from: now)
-            filteredSleepData = sleepData.filter { $0.label == todayLabel }
+        // case .day:
+        //     let todayLabel = formatter.string(from: now)
+        //     filteredSleepData = sleepData.filter { $0.label == todayLabel }
         case .week:
             filteredSleepData = Array(sleepData.prefix(7))
         case .month:
@@ -87,10 +88,10 @@ class HomeViewModel: ObservableObject {
                 let now = Date()
                 
                 switch self.timeView {
-                case .day:
-                    self.nightmareCount = nightmares.filter {
-                        $0.1 && calendar.isDate($0.0, inSameDayAs: now)
-                    }.count
+                // case .day:
+                //     self.nightmareCount = nightmares.filter {
+                //         $0.1 && calendar.isDate($0.0, inSameDayAs: now)
+                //     }.count
                 case .week:
                     if let week = calendar.dateInterval(of: .weekOfYear, for: now) {
                         self.nightmareCount = nightmares.filter {
