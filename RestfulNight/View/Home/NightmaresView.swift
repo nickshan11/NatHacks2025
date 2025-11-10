@@ -14,6 +14,7 @@ struct NightmaresView: View {
     @State private var showingLogSheet = false
     @State private var newDescription: String = ""
     @State private var newIntensity: Double = 5
+    @State private var vibrationStrength: Int = 3 // 1-5 scale
     @State private var statusMessage: String? = nil
 
     private let calendar = Calendar(identifier: .gregorian)
@@ -41,6 +42,45 @@ struct NightmaresView: View {
                                         showingLogSheet = true
                                    })
                         .padding(.horizontal)
+
+                    // Vibration Strength Slider
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Vibration Strength")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        HStack(spacing: 8) {
+                            ForEach(1...5, id: \.self) { level in
+                                Button(action: {
+                                    vibrationStrength = level
+                                }) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(vibrationStrength == level ? Color.blue : Color.gray.opacity(0.2))
+                                            .frame(height: 50)
+                                        
+                                        Text("\(level)")
+                                            .font(.headline)
+                                            .foregroundColor(vibrationStrength == level ? .white : .primary)
+                                    }
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                        }
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            Text("Light")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("Strong")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.horizontal)
+                    }
+                    .padding(.vertical)
 
                     if let statusMessage = statusMessage {
                         Text(statusMessage)
@@ -84,6 +124,7 @@ struct NightmaresView: View {
                 Text("Intensity: \(Int(newIntensity)) / 10")
                 Slider(value: $newIntensity, in: 1...10, step: 1)
             }
+            
             Button {
                 saveNightmareEntry()
             } label: {
@@ -109,9 +150,10 @@ struct NightmaresView: View {
         guard let dateKey = selectedDate else { return }
         let current = nightmareCounts[dateKey] ?? 0
         nightmareCounts[dateKey] = current + 1
-        statusMessage = "Nightmare logged (mock)."
+        statusMessage = "Nightmare logged (mock). Vibration: \(vibrationStrength)/5"
         newDescription = ""
         newIntensity = 5
+        vibrationStrength = 3
     }
 }
 
@@ -189,6 +231,7 @@ private struct DayCell: View {
         }
     }
 }
+
 
 #Preview {
     NightmaresView()
