@@ -54,7 +54,7 @@ def get_sleep_scores(device_id):
     Response: { deviceId: str, month: str, scores: [{ date: YYYY-MM-DD, score: int }] }
     """
     month = request.args.get('month')
-    today = datetime.utcnow()
+    today = datetime.now()
     if not month:
         month = today.strftime('%Y-%m')
     try:
@@ -83,4 +83,7 @@ def get_sleep_scores(device_id):
         'month': month,
         'scores': scores
     })
+
+
+
 
