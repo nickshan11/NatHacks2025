@@ -1,6 +1,5 @@
 //
-//  RestfulNightApp.swift
-//  RestfulNight
+//  REMGuardApp.swift
 //
 //  Created by Nick Shan on 08/11/2025.
 //
