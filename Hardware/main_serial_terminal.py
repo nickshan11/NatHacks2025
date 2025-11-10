@@ -52,7 +52,7 @@ class SerialReader(QThread):
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         # --- Chunked 30s file ---
-        csv_name = f"biosignals-{self.session_id}-{self.csv_index:03d}.csv"
+        csv_name = f"biosignals-{self.session_id}.csv"
         csv_path = os.path.join(script_dir, csv_name)
         self.csv_file = open(csv_path, 'w', newline='')
         self.csv_writer = csv.writer(self.csv_file)
