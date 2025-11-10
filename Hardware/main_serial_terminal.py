@@ -259,7 +259,7 @@ class SerialTerminal(QWidget):
 
     def update_plot(self, values):
         for i, val in enumerate(values):
-            if (i==0):
+            if (True):
                 self.data_buffers[i].append(val - 32768)
                 self.plot_curves[i].setData(list(self.data_buffers[i]))
 
