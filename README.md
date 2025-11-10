@@ -25,3 +25,5 @@ REMGuard is a nightmare intervention system that combines medical-grade ECG moni
 
 ## Competitive Advantage:
 Unlike consumer wearables that use 90-95% accurate optical sensors, REMGuard employs research-grade ECG for direct electrical heart activity measurement. 
+
+<img width="2880" height="1702" alt="image" src="https://github.com/user-attachments/assets/d82cc6f5-e99c-4d71-8482-9e6e07d84866" />
