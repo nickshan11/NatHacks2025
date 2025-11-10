@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		5B7A310C2C3FDCCB00353790 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7A310B2C3FDCCB00353790 /* HomeViewModel.swift */; };
 		5B7A31132C401F9F00353790 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7A31122C401F9F00353790 /* SettingsViewModel.swift */; };
-		5BB3ED6A2C3AD54600CD4274 /* RestfulNightApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB3ED692C3AD54600CD4274 /* RestfulNightApp.swift */; };
+		5BB3ED6A2C3AD54600CD4274 /* REMGuardApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB3ED692C3AD54600CD4274 /* REMGuardApp.swift */; };
 		5BB3ED6C2C3AD54600CD4274 /* SleepSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB3ED6B2C3AD54600CD4274 /* SleepSettingsView.swift */; };
 		5BB3ED6E2C3AD54700CD4274 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BB3ED6D2C3AD54700CD4274 /* Assets.xcassets */; };
 		5BB3ED712C3AD54700CD4274 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5BB3ED702C3AD54700CD4274 /* Preview Assets.xcassets */; };
@@ -31,8 +31,8 @@
 /* Begin PBXFileReference section */
 		5B7A310B2C3FDCCB00353790 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		5B7A31122C401F9F00353790 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		5BB3ED662C3AD54600CD4274 /* RestfulNight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RestfulNight.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5BB3ED692C3AD54600CD4274 /* RestfulNightApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestfulNightApp.swift; sourceTree = "<group>"; };
+		5BB3ED662C3AD54600CD4274 /* REMGuard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = REMGuard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BB3ED692C3AD54600CD4274 /* REMGuardApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = REMGuardApp.swift; sourceTree = "<group>"; };
 		5BB3ED6B2C3AD54600CD4274 /* SleepSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepSettingsView.swift; sourceTree = "<group>"; };
 		5BB3ED6D2C3AD54700CD4274 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5BB3ED702C3AD54700CD4274 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 		5BB3ED5D2C3AD54600CD4274 = {
 			isa = PBXGroup;
 			children = (
-				5BB3ED682C3AD54600CD4274 /* RestfulNight */,
+				5BB3ED682C3AD54600CD4274 /* REMGuard */,
 				5BB3ED672C3AD54600CD4274 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -107,22 +107,22 @@
 		5BB3ED672C3AD54600CD4274 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5BB3ED662C3AD54600CD4274 /* RestfulNight.app */,
+				5BB3ED662C3AD54600CD4274 /* REMGuard.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5BB3ED682C3AD54600CD4274 /* RestfulNight */ = {
+		5BB3ED682C3AD54600CD4274 /* REMGuard */ = {
 			isa = PBXGroup;
 			children = (
-				5BB3ED692C3AD54600CD4274 /* RestfulNightApp.swift */,
+				5BB3ED692C3AD54600CD4274 /* REMGuardApp.swift */,
 				5BB3ED7F2C3B0AA200CD4274 /* View */,
 				5BB3ED792C3AD96A00CD4274 /* SleepCalculator.mlmodel */,
 				5BB3ED6D2C3AD54700CD4274 /* Assets.xcassets */,
 				5BB3ED6F2C3AD54700CD4274 /* Preview Content */,
 				83364B212EBFFBCB00C93560 /* GoogleService-Info.plist */,
 			);
-			path = RestfulNight;
+			path = REMGuard;
 			sourceTree = "<group>";
 		};
 		5BB3ED6F2C3AD54700CD4274 /* Preview Content */ = {
@@ -157,9 +157,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5BB3ED652C3AD54600CD4274 /* RestfulNight */ = {
+		5BB3ED652C3AD54600CD4274 /* REMGuard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5BB3ED742C3AD54700CD4274 /* Build configuration list for PBXNativeTarget "RestfulNight" */;
+			buildConfigurationList = 5BB3ED742C3AD54700CD4274 /* Build configuration list for PBXNativeTarget "REMGuard" */;
 			buildPhases = (
 				5BB3ED622C3AD54600CD4274 /* Sources */,
 				5BB3ED632C3AD54600CD4274 /* Frameworks */,
@@ -172,9 +172,9 @@
 			fileSystemSynchronizedGroups = (
 				8313BCAA2EC14B4B005538D8 /* Data */,
 			);
-			name = RestfulNight;
+			name = REMGuard;
 			productName = RestfulNight;
-			productReference = 5BB3ED662C3AD54600CD4274 /* RestfulNight.app */;
+			productReference = 5BB3ED662C3AD54600CD4274 /* REMGuard.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -192,7 +192,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5BB3ED612C3AD54600CD4274 /* Build configuration list for PBXProject "RestfulNight" */;
+			buildConfigurationList = 5BB3ED612C3AD54600CD4274 /* Build configuration list for PBXProject "REMGuard" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -208,7 +208,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5BB3ED652C3AD54600CD4274 /* RestfulNight */,
+				5BB3ED652C3AD54600CD4274 /* REMGuard */,
 			);
 		};
 /* End PBXProject section */
@@ -241,7 +241,7 @@
 				5BB3ED6C2C3AD54600CD4274 /* SleepSettingsView.swift in Sources */,
 				5BB3ED7A2C3AD96A00CD4274 /* SleepCalculator.mlmodel in Sources */,
 				5B7A31132C401F9F00353790 /* SettingsViewModel.swift in Sources */,
-				5BB3ED6A2C3AD54600CD4274 /* RestfulNightApp.swift in Sources */,
+				5BB3ED6A2C3AD54600CD4274 /* REMGuardApp.swift in Sources */,
 				5BF32F852C3C05A900A528BD /* HomeView.swift in Sources */,
 				5BB3ED7C2C3ADCAB00CD4274 /* OnboardingView.swift in Sources */,
 			);
@@ -376,7 +376,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"RestfulNight/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"REMGuard/Preview Content\"";
 				DEVELOPMENT_TEAM = 57753UA8JQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -406,7 +406,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"RestfulNight/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"REMGuard/Preview Content\"";
 				DEVELOPMENT_TEAM = 57753UA8JQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -432,7 +432,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5BB3ED612C3AD54600CD4274 /* Build configuration list for PBXProject "RestfulNight" */ = {
+		5BB3ED612C3AD54600CD4274 /* Build configuration list for PBXProject "REMGuard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5BB3ED722C3AD54700CD4274 /* Debug */,
@@ -441,7 +441,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5BB3ED742C3AD54700CD4274 /* Build configuration list for PBXNativeTarget "RestfulNight" */ = {
+		5BB3ED742C3AD54700CD4274 /* Build configuration list for PBXNativeTarget "REMGuard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5BB3ED752C3AD54700CD4274 /* Debug */,
