@@ -9,7 +9,7 @@ def CSVtoEDF(fileName):
     ecg_signal = df.iloc[1:, 0].values.astype(np.float64)
 
     # Define sampling rate (Hz) — must be known or estimated
-    fs = 250  # Change this to your actual sampling frequency
+    fs = 125  # Change this to your actual sampling frequency
 
     # Create EDF writer
     output_file = "ourECG.edf"
