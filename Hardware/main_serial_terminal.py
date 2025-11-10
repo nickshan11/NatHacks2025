@@ -20,6 +20,9 @@ SYNC2 = 0x7C
 END_BYTE = 0x01
 
 # --- Worker Thread for Serial Reading ---
+import random
+import string
+
 class SerialReader(QThread):
     data_received = pyqtSignal(str)
     packet_decoded = pyqtSignal(list)
@@ -33,6 +36,39 @@ class SerialReader(QThread):
         self.ser = None
         self.csv_file = None
         self.csv_writer = None
+        self.full_csv_file = None
+        self.full_csv_writer = None
+        self.start_time = None
+        self.csv_start_time = None
+        self.csv_index = 0
+        self.session_id = ''.join(random.choices(string.ascii_lowercase, k=6))  # e.g. "asdfjk"
+
+    def open_new_csv(self):
+        """Open new chunk CSV and keep full CSV open throughout the session."""
+        # Close previous chunk if needed
+        if self.csv_file:
+            self.csv_file.close()
+        self.csv_index += 1
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # --- Chunked 30s file ---
+        csv_name = f"biosignals-{self.session_id}-{self.csv_index:03d}.csv"
+        csv_path = os.path.join(script_dir, csv_name)
+        self.csv_file = open(csv_path, 'w', newline='')
+        self.csv_writer = csv.writer(self.csv_file)
+        self.csv_writer.writerow(['ElapsedTime', 'Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
+        self.csv_start_time = time.time()
+
+        # --- Full session file (created once) ---
+        if not self.full_csv_file:
+            full_name = f"biosignals-{self.session_id}-full.csv"
+            full_path = os.path.join(script_dir, full_name)
+            self.full_csv_file = open(full_path, 'w', newline='')
+            self.full_csv_writer = csv.writer(self.full_csv_file)
+            self.full_csv_writer.writerow(['ElapsedTime', 'Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
+            self.data_received.emit(f"[Logging] Started full session file: {full_name}")
+
+        self.data_received.emit(f"[Logging] Started new chunk file: {csv_name}")
 
     def run(self):
         try:
@@ -40,19 +76,19 @@ class SerialReader(QThread):
             self.running = True
 
             if self.log_csv:
-                date = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-                script_dir = os.path.dirname(os.path.abspath(__file__))
-                csv_path = os.path.join(script_dir, f"biosignals-{date}.csv")
-                self.csv_file = open(csv_path, 'w', newline='')
-                self.csv_writer = csv.writer(self.csv_file)
-                self.csv_writer.writerow(['ElapsedTime', 'Counter'] + [f'CH{i}' for i in range(NUM_CHANNELS)])
-            
-            start_time = time.time()
+                self.open_new_csv()
+
+            self.start_time = time.time()
             buffer = bytearray()
 
             while self.running:
                 if self.ser.in_waiting:
                     buffer.extend(self.ser.read(self.ser.in_waiting))
+
+                    # --- Rotate CSV every 30 seconds ---
+                    if self.log_csv and (time.time() - self.csv_start_time) >= 30.0:
+                        self.open_new_csv()
+
                     while len(buffer) >= PACKET_LEN:
                         if buffer[0] == SYNC1 and buffer[1] == SYNC2:
                             packet = buffer[:PACKET_LEN]
@@ -63,8 +99,11 @@ class SerialReader(QThread):
                                 self.data_received.emit(text)
                                 self.packet_decoded.emit(values)
                                 if self.csv_writer:
-                                    elapsed = time.time() - start_time
-                                    self.csv_writer.writerow([f"{elapsed:.3f}", counter] + values)
+                                    elapsed = time.time() - self.start_time
+                                    row = [f"{elapsed:.3f}", counter] + values
+                                    self.csv_writer.writerow(row)         # chunk file
+                                    if self.full_csv_writer:
+                                        self.full_csv_writer.writerow(row) # full file
                             else:
                                 buffer.pop(0)
                         elif buffer[0] == 0x2 and buffer[1] == 0x0 and buffer[2] == 0x0:
@@ -80,8 +119,11 @@ class SerialReader(QThread):
         except serial.SerialException as e:
             self.data_received.emit(f"Serial error: {e}")
         finally:
+            # Clean up files and serial
             if self.csv_file:
                 self.csv_file.close()
+            if self.full_csv_file:
+                self.full_csv_file.close()
             if self.ser and self.ser.is_open:
                 self.ser.close()
 
@@ -218,7 +260,7 @@ class SerialTerminal(QWidget):
     def update_plot(self, values):
         for i, val in enumerate(values):
             if (i==0):
-                self.data_buffers[i].append(val)
+                self.data_buffers[i].append(val - 32768)
                 self.plot_curves[i].setData(list(self.data_buffers[i]))
 
 

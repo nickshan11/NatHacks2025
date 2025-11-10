@@ -144,7 +144,7 @@ ISR(TIMER1_COMPA_vect) {
       adcValue = analogRead(currentChannel);
 
       //FILTER
-      float raw_f = (float)adcValue - 512.0f;
+      float raw_f = (float)adcValue;
       float filtered_f = ECGFilterChannel(currentChannel, raw_f);
       int16_t filtered_i16 = (int16_t) round(filtered_f);
       uint16_t encoded = (uint16_t)( (uint16_t)filtered_i16 + 0x8000 );
@@ -190,6 +190,7 @@ void timerBegin(float sampling_rate) {
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  pinMode(7, OUTPUT);
   // while (!Serial) {
   //   ;  // Wait for serial port to connect. Needed for native USB
   // }
