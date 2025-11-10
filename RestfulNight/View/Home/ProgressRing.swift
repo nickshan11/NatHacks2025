@@ -1,4 +1,9 @@
-// RestfulNight/View/Home/ProgressRing.swift (same file kept together here)
+//
+//  ProgressRing.swift
+//  RestfulNight
+//
+//  Created by Nick Shan on 2025-11-09.
+//
 import SwiftUI
 
 struct ProgressRing: View {
@@ -11,9 +16,9 @@ struct ProgressRing: View {
                 .stroke(Color.gray.opacity(0.3), lineWidth: 20)
             
             Circle()
-                .trim(from: 1 - progress, to: 1) // Reverse the trim to make it counterclockwise
+                .trim(from: 0, to: progress) // Fill clockwise from start
                 .stroke(Color.blue, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                .rotationEffect(.degrees(-90)) // Rotate counterclockwise to start from the top
+                .rotationEffect(.degrees(-90)) // Start from 12 o'clock
             
             VStack {
                 Text("\(Int(value))")
@@ -26,10 +31,4 @@ struct ProgressRing: View {
         }
         .frame(width: 150, height: 150) // Adjust size as needed
     }
-}//
-//  ProgressRing.swift
-//  RestfulNight
-//
-//  Created by Nick Shan on 2025-11-09.
-//
-
+}
